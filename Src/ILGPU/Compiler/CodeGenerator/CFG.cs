@@ -10,6 +10,7 @@
 // -----------------------------------------------------------------------------
 
 using System.Collections.Generic;
+using static ILGPU.LLVM.LLVMMethods;
 
 namespace ILGPU.Compiler
 {
@@ -21,16 +22,36 @@ namespace ILGPU.Compiler
         /// The block mapping from il offsets to basic blocks.
         /// </summary>
         private readonly Dictionary<int, BasicBlock> bbMapping = new Dictionary<int, BasicBlock>();
+        private readonly List<BasicBlock> postOrder = new List<BasicBlock>();
 
         private void InitCFG()
         {
             // Build basic blocks
-            EntryBlock = new BasicBlock(this, Function.AppendBasicBlock("Entry"));
+            EntryBlock = new BasicBlock(this, AppendBasicBlock(Function, "Entry"));
             bbMapping.Add(0, EntryBlock);
             var offsetMapping = BuildBasicBlocks();
 
             // Setup basic blocks
             SetupBasicBlocks(offsetMapping, new HashSet<BasicBlock>(), EntryBlock, 0);
+
+            // Determine post ordering
+            processedBasicBlocks.Clear();
+            DeterminePostOrder(EntryBlock);
+        }
+
+        /// <summary>
+        /// Determines the post order of all blocks.
+        /// </summary>
+        /// <param name="block">The current block.</param>
+        private void DeterminePostOrder(BasicBlock block)
+        {
+            if (!processedBasicBlocks.Contains(block))
+            {
+                processedBasicBlocks.Add(block);
+                foreach (var successor in block.Successors)
+                    DeterminePostOrder(successor);
+            }
+            postOrder.Add(block);
         }
 
         /// <summary>
@@ -51,7 +72,7 @@ namespace ILGPU.Compiler
                 {
                     if (bbMapping.ContainsKey(target))
                         continue;
-                    bbMapping.Add(target, new BasicBlock(this, Function.AppendBasicBlock($"BB_{blockIdx}")));
+                    bbMapping.Add(target, new BasicBlock(this, AppendBasicBlock(Function, $"BB_{blockIdx}")));
                     ++blockIdx;
                 }
             }

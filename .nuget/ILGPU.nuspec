@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>ILGPU</id>
-    <version>0.1.3</version>
+    <version>0.1.4</version>
     <title>ILGPU</title>
     <owners>Marcel Koester</owners>
     <authors>Marcel Koester</authors>
@@ -32,7 +32,6 @@
     <file src="..\Bin\Release\X64\ILGPU.LLVM.dll" target="build\X64\ILGPU.LLVM.dll" />
     <file src="..\Bin\Release\X86\libLLVM.dll" target="build\X86\libLLVM.dll" />
     <file src="..\Bin\Release\X64\libLLVM.dll" target="build\X64\libLLVM.dll" />
-    <file src="..\Bin\Release\LLVMSharp.dll" target="lib\net46\LLVMSharp.dll" />
     <file src="..\Bin\Debug\ILGPU.dll" target="lib\net46\Debug\ILGPU.dll" />
     <file src="..\Bin\Debug\ILGPU.xml" target="lib\net46\Debug\ILGPU.xml" />
     <file src="..\Bin\Release\ILGPU.dll" target="lib\net46\Release\ILGPU.dll" />
